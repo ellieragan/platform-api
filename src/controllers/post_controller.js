@@ -7,6 +7,7 @@ export async function createPost(postFields) {
   post.content = postFields.content;
   post.coverUrl = postFields.coverUrl;
   post.tags = postFields.tags;
+  post.author = postFields.author;
 
   // return post
   try {

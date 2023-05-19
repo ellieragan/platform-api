@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import * as Posts from './controllers/post_controller';
+import * as UserController from './controllers/user_controller';
+import { requireAuth, requireSignin } from './services/passport';
 
 const router = Router();
 
@@ -18,9 +20,26 @@ router.get('/', (req, res) => {
 
 //   .get(/* your choice of defining inline above or function by reference below */)
 //   .delete(exampleHandleDelete);
+router.post('/signin', requireSignin, async (req, res) => {
+  try {
+    const token = UserController.signin(req.user);
+    res.json({ token, email: req.user.email });
+  } catch (error) {
+    res.status(422).send({ error: error.toString() });
+  }
+});
+
+router.post('/signup', async (req, res) => {
+  try {
+    const token = await UserController.signup(req.body);
+    res.json({ token, email: req.body.email });
+  } catch (error) {
+    res.status(422).send({ error: error.toString() });
+  }
+});
 
 router.route('/posts')
-  .post(async (req, res) => {
+  .post(requireAuth, async (req, res) => {
     // use req.body etc to await some contoller function
     // send back the result
     // or catch the error and send back an error
@@ -54,7 +73,7 @@ router.route('/posts/:id')
     }
   })
 
-  .put(async (req, res) => {
+  .put(requireAuth, async (req, res) => {
     try {
       const updatedPost = await Posts.updatePost(req.params.id, req.body);
       return res.json(updatedPost);
@@ -63,7 +82,7 @@ router.route('/posts/:id')
     }
   })
 
-  .delete(async (req, res) => {
+  .delete(requireAuth, async (req, res) => {
     try {
       const post = await Posts.deletePost(req.params.id);
       return res.json(post);
