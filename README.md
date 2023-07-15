@@ -1,13 +1,3 @@
-# Title
+# API for blog
 
-*description*
-
-[deployed url](http://url-if-deployed-here)
-
-## What Worked Well
-
-## What Didn't
-
-## Extra Credit
-
-## Screenshots
+deployed url: https://platform-api-ellieragan.onrender.com
